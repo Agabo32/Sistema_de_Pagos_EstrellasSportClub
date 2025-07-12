@@ -21,10 +21,54 @@ class PagoController {
     }
 
     public function obtenerPorAtleta($id_atleta) {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id_atleta = ? ORDER BY fecha_pago DESC";
+        $query = "SELECT p.*, a.nombre, a.apellido, a.disciplina, a.genero, a.cedula 
+                  FROM " . $this->table_name . " p 
+                  JOIN atletas a ON p.id_atleta = a.id_atleta 
+                  WHERE p.id_atleta = ? 
+                  ORDER BY p.fecha_pago DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $id_atleta);
         $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerConFiltros($filtros = []) {
+        $query = "SELECT p.*, a.nombre, a.apellido, a.disciplina, a.genero, a.cedula 
+                  FROM " . $this->table_name . " p 
+                  JOIN atletas a ON p.id_atleta = a.id_atleta 
+                  WHERE 1=1";
+        
+        $params = [];
+        $paramIndex = 1;
+        
+        // Filtro por tipo de pago
+        if (!empty($filtros['tipo_pago'])) {
+            $query .= " AND p.tipo_pago = ?";
+            $params[] = $filtros['tipo_pago'];
+        }
+        
+        // Filtro por método de pago
+        if (!empty($filtros['metodo_pago'])) {
+            $query .= " AND p.metodo_pago = ?";
+            $params[] = $filtros['metodo_pago'];
+        }
+        
+        // Filtro por fecha desde
+        if (!empty($filtros['fecha_desde'])) {
+            $query .= " AND p.fecha_pago >= ?";
+            $params[] = $filtros['fecha_desde'];
+        }
+        
+        // Filtro por fecha hasta
+        if (!empty($filtros['fecha_hasta'])) {
+            $query .= " AND p.fecha_pago <= ?";
+            $params[] = $filtros['fecha_hasta'] . ' 23:59:59';
+        }
+        
+        $query .= " ORDER BY p.fecha_pago DESC";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -34,7 +78,7 @@ class PagoController {
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute([
+        $resultado = $stmt->execute([
             $datos['id_atleta'],
             $datos['tipo_pago'],
             $datos['metodo_pago'],
@@ -44,6 +88,11 @@ class PagoController {
             $datos['observaciones'],
             $datos['referencia']
         ]);
+        
+        if ($resultado) {
+            return $this->conn->lastInsertId();
+        }
+        return false;
     }
 
     public function obtenerReporteMensual($mes, $año) {
