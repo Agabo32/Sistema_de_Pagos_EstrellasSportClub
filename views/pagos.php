@@ -16,8 +16,33 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     switch($method) {
         case 'GET':
+            if (isset($_GET['id_atleta'])) {
+                $id_atleta = $_GET['id_atleta'];
+                $pagos = $controller->obtenerPorAtleta($id_atleta);
+                echo json_encode(['success' => true, 'pagos' => $pagos]);
+            } else {
+                // Verificar si hay filtros
+                $filtros = [];
+                if (!empty($_GET['tipo_pago'])) {
+                    $filtros['tipo_pago'] = $_GET['tipo_pago'];
+                }
+                if (!empty($_GET['metodo_pago'])) {
+                    $filtros['metodo_pago'] = $_GET['metodo_pago'];
+                }
+                if (!empty($_GET['fecha_desde'])) {
+                    $filtros['fecha_desde'] = $_GET['fecha_desde'];
+                }
+                if (!empty($_GET['fecha_hasta'])) {
+                    $filtros['fecha_hasta'] = $_GET['fecha_hasta'];
+                }
+                
+                if (!empty($filtros)) {
+                    $pagos = $controller->obtenerConFiltros($filtros);
+                } else {
             $pagos = $controller->obtenerTodos();
+                }
             echo json_encode(['success' => true, 'pagos' => $pagos]);
+            }
             break;
             
         case 'POST':
@@ -30,8 +55,12 @@ try {
                     exit;
                 }
             }
-            $resultado = $controller->crear($input);
-            echo json_encode(['success' => $resultado]);
+            $pago_id = $controller->crear($input);
+            if ($pago_id) {
+                echo json_encode(['success' => true, 'pago_id' => $pago_id]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al crear el pago']);
+            }
             break;
             
         default:
