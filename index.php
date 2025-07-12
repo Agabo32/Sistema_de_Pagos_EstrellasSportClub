@@ -1,3 +1,7 @@
+<?php
+require_once 'includes/auth.php';
+$usuario = obtenerUsuarioActual();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -67,19 +71,50 @@
                         <p class="text-sm text-white opacity-90">Sistema de Gestión</p>
                     </div>
                 </div>
-                <div class="flex space-x-2" id="navbar-links">
-                    <a href="#dashboard" class="nav-link">
-                        <i class="fas fa-chart-line mr-2"></i>Dashboard
-                    </a>
-                    <a href="#atletas" class="nav-link">
-                        <i class="fas fa-users mr-2"></i>Atletas
-                    </a>
-                    <a href="#pagos" class="nav-link">
-                        <i class="fas fa-credit-card mr-2"></i>Pagos
-                    </a>
-                    <a href="#reportes" class="nav-link">
-                        <i class="fas fa-chart-bar mr-2"></i>Reportes
-                    </a>
+                <div class="flex items-center space-x-4" id="navbar-links">
+                    <div class="flex space-x-2">
+                        <a href="#dashboard" class="nav-link">
+                            <i class="fas fa-chart-line mr-2"></i>Dashboard
+                        </a>
+                        <a href="#atletas" class="nav-link">
+                            <i class="fas fa-users mr-2"></i>Atletas
+                        </a>
+                        <a href="#pagos" class="nav-link">
+                            <i class="fas fa-credit-card mr-2"></i>Pagos
+                        </a>
+                        <a href="#reportes" class="nav-link">
+                            <i class="fas fa-chart-bar mr-2"></i>Reportes
+                        </a>
+                    </div>
+                    
+                    <!-- Información del usuario -->
+                    <div class="flex items-center space-x-3 border-l border-white border-opacity-30 pl-4">
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-white"><?php echo htmlspecialchars($usuario['nombre_completo']); ?></div>
+                            <div class="text-xs text-white opacity-80"><?php echo htmlspecialchars($usuario['rol']); ?></div>
+                        </div>
+                        <div class="relative">
+                            <button onclick="toggleUserMenu()" class="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors">
+                                <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-sm"></i>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            
+                            <!-- Menú desplegable del usuario -->
+                            <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+                                <div class="py-2">
+                                    <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                                        <div class="font-medium"><?php echo htmlspecialchars($usuario['nombre_completo']); ?></div>
+                                        <div class="text-gray-500"><?php echo htmlspecialchars($usuario['nombre_usuario']); ?></div>
+                                    </div>
+                                    <a href="logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -709,5 +744,22 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="assets/js/app.js"></script>
+    <script>
+        // Función para manejar el menú desplegable del usuario
+        function toggleUserMenu() {
+            const menu = document.getElementById('user-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Cerrar el menú cuando se hace clic fuera de él
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('user-menu');
+            const userButton = event.target.closest('button[onclick="toggleUserMenu()"]');
+            
+            if (!userButton && !menu.contains(event.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
