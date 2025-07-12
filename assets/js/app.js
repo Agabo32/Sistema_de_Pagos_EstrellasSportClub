@@ -172,19 +172,20 @@ function mostrarAtletas() {
     
     atletas.forEach(atleta => {
         const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50 transition-colors';
         tr.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">${atleta.nombre} ${atleta.apellido}</div>
+                <div class="text-sm font-semibold text-gray-900">${atleta.nombre} ${atleta.apellido}</div>
                 <div class="text-sm text-gray-500">${atleta.disciplina || 'N/A'} - ${atleta.genero === 'M' ? 'Masculino' : 'Femenino'}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${atleta.cedula}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${atleta.telefono || 'N/A'}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatearFecha(atleta.fecha_registro)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button onclick="editarAtleta(${atleta.id_atleta})" class="text-blue-600 hover:text-blue-900 mr-3" title="Editar">
+                <button onclick="editarAtleta(${atleta.id_atleta})" class="text-blue-600 hover:text-blue-900 mr-3 transition-colors" title="Editar">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button onclick="eliminarAtleta(${atleta.id_atleta})" class="text-red-600 hover:text-red-900" title="Eliminar">
+                <button onclick="eliminarAtleta(${atleta.id_atleta})" class="text-red-600 hover:text-red-900 transition-colors" title="Eliminar">
                     <i class="fas fa-trash"></i>
                 </button>
             </td>
@@ -199,21 +200,22 @@ function mostrarPagos() {
     
     pagos.forEach(pago => {
         const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50 transition-colors';
         const metodoBadge = pago.metodo_pago === 'Divisa' ? 
-            '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Divisa</span>' :
-            '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Bolívares</span>';
+            '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 border border-green-200">Divisa</span>' :
+            '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-200">Bolívares</span>';
         
         const tipoBadge = pago.tipo_pago === 'Inscripción' ?
-            '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">Inscripción</span>' :
-            '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Mensualidad</span>';
+            '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border border-purple-200">Inscripción</span>' :
+            '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border border-orange-200">Mensualidad</span>';
         
         tr.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                 ${pago.nombre} ${pago.apellido}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">${tipoBadge}</td>
             <td class="px-6 py-4 whitespace-nowrap">${metodoBadge}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                 ${pago.metodo_pago === 'Divisa' ? '$' : 'Bs. '}${parseFloat(pago.monto).toFixed(2)}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatearFecha(pago.fecha_pago)}</td>
