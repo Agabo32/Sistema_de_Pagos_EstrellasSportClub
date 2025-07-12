@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estrellas Sport Club - Sistema de Gestión</title>
+    <link rel="icon" type="image/png" href="assets/image/1731114751966-removebg-preview.png">
+    <link rel="shortcut icon" type="image/png" href="assets/image/1731114751966-removebg-preview.png">
+    <link rel="apple-touch-icon" href="assets/image/1731114751966-removebg-preview.png">
     <link href="assets/css/tailwind.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
