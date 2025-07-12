@@ -171,6 +171,36 @@
                     </div>
                 </div>
                 <div class="p-6">
+                    <!-- Filtros -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Género</label>
+                                <select id="filtro-genero-atletas" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarAtletas()">
+                                    <option value="">Todos</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Disciplina</label>
+                                <select id="filtro-disciplina-atletas" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarAtletas()">
+                                    <option value="">Todas</option>
+                                    <option value="Voleibol">Voleibol</option>
+                                    <option value="Kickingball">Kickingball</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Cédula</label>
+                                <input type="text" id="filtro-cedula-atletas" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Buscar por cédula..." onkeyup="filtrarAtletas()">
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="limpiarFiltrosAtletas()" class="w-full px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                                    <i class="fas fa-times mr-2"></i>Limpiar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full table-auto">
                             <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
@@ -203,6 +233,41 @@
                     </div>
                 </div>
                 <div class="p-6">
+                    <!-- Filtros para pagos -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">Filtros de Pagos</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de Pago</label>
+                                <select id="filtro-tipo-pago" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagos()">
+                                    <option value="">Todos</option>
+                                    <option value="Inscripción">Inscripción</option>
+                                    <option value="Mensualidad">Mensualidad</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Método de Pago</label>
+                                <select id="filtro-metodo-pago" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagos()">
+                                    <option value="">Todos</option>
+                                    <option value="Divisa">Divisa ($)</option>
+                                    <option value="Bolivares">Bolívares (Bs.)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Fecha Desde</label>
+                                <input type="date" id="filtro-fecha-desde" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagos()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Fecha Hasta</label>
+                                <input type="date" id="filtro-fecha-hasta" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagos()">
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="limpiarFiltrosPagos()" class="w-full px-3 py-2 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                                    <i class="fas fa-times mr-1"></i>Limpiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full table-auto">
                             <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
@@ -213,6 +278,7 @@
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Monto</th>
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Fecha</th>
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Mes</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-pagos" class="bg-white divide-y divide-gray-100">
@@ -435,7 +501,213 @@
         </div>
     </div>
 
+    <!-- Modal Pagos del Atleta -->
+    <div id="modal-pagos-atleta" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 w-[1000px] max-h-[80vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Pagos de <span id="nombre-atleta-pagos"></span></h3>
+                <button onclick="cerrarModalPagosAtleta()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-100">
+                        <div class="text-sm font-semibold text-purple-700">Total Divisas</div>
+                        <div id="total-divisas-atleta" class="text-xl font-bold text-purple-800">$0.00</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-100">
+                        <div class="text-sm font-semibold text-blue-700">Total Bolívares</div>
+                        <div id="total-bolivares-atleta" class="text-xl font-bold text-blue-800">Bs. 0.00</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-100">
+                        <div class="text-sm font-semibold text-green-700">Total Pagos</div>
+                        <div id="total-pagos-atleta" class="text-xl font-bold text-green-800">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros para pagos del atleta -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">Filtros de Pagos</h4>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de Pago</label>
+                        <select id="filtro-tipo-pago-atleta" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagosAtleta()">
+                            <option value="">Todos</option>
+                            <option value="Inscripción">Inscripción</option>
+                            <option value="Mensualidad">Mensualidad</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Método de Pago</label>
+                        <select id="filtro-metodo-pago-atleta" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagosAtleta()">
+                            <option value="">Todos</option>
+                            <option value="Divisa">Divisa ($)</option>
+                            <option value="Bolivares">Bolívares (Bs.)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Fecha Desde</label>
+                        <input type="date" id="filtro-fecha-desde-atleta" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagosAtleta()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Fecha Hasta</label>
+                        <input type="date" id="filtro-fecha-hasta-atleta" class="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" onchange="filtrarPagosAtleta()">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="limpiarFiltrosPagosAtleta()" class="w-full px-3 py-2 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                            <i class="fas fa-times mr-1"></i>Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Atleta</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Método</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Monto</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Fecha</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Mes</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Referencia</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-pagos-atleta" class="bg-white divide-y divide-gray-100">
+                        <!-- Los pagos del atleta se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button onclick="cerrarModalPagosAtleta()" class="px-6 py-3 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Recibo -->
+    <div id="modal-recibo" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 w-[600px] max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Recibo de Pago</h3>
+                <div class="flex space-x-2">
+                    <button onclick="descargarReciboPNG()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        <i class="fas fa-download mr-2"></i>PNG
+                    </button>
+                    <button onclick="descargarReciboJPG()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                        <i class="fas fa-download mr-2"></i>JPG
+                    </button>
+                    <button onclick="imprimirRecibo()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        <i class="fas fa-print mr-2"></i>Imprimir
+                    </button>
+                    <button onclick="cerrarModalRecibo()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="contenido-recibo" class="bg-white border-2 border-gray-200 rounded-lg p-6" style="min-width: 500px; font-family: Arial, sans-serif;">
+                <!-- Encabezado del recibo -->
+                <div class="text-center mb-6 border-b-2 border-gray-300 pb-4">
+                    <div class="flex items-center justify-center mb-2">
+                        <img src="assets/image/1731114751966-removebg-preview.png" alt="Logo" class="h-12 w-auto mr-3">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800">Estrellas Sport Club</h1>
+                            <p class="text-sm text-gray-600">Sistema de Gestión</p>
+                        </div>
+                    </div>
+                    <div class="text-lg font-semibold text-gray-700">RECIBO DE PAGO</div>
+                    <div class="text-sm text-gray-500">Fecha: <span id="fecha-recibo"></span></div>
+                </div>
+
+                <!-- Información del atleta -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">Información del Atleta</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="font-semibold text-gray-700">Nombre:</span>
+                            <span id="nombre-atleta-recibo" class="ml-2"></span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-700">Cédula:</span>
+                            <span id="cedula-atleta-recibo" class="ml-2"></span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-700">Disciplina:</span>
+                            <span id="disciplina-atleta-recibo" class="ml-2"></span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-700">Teléfono:</span>
+                            <span id="telefono-atleta-recibo" class="ml-2"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles del pago -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">Detalles del Pago</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-semibold text-gray-700">Tipo de Pago:</span>
+                            <span id="tipo-pago-recibo" class="font-medium"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-semibold text-gray-700">Método de Pago:</span>
+                            <span id="metodo-pago-recibo" class="font-medium"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-semibold text-gray-700">Monto:</span>
+                            <span id="monto-recibo" class="font-bold text-lg"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-semibold text-gray-700">Fecha de Pago:</span>
+                            <span id="fecha-pago-recibo" class="font-medium"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-semibold text-gray-700">Mes de Pago:</span>
+                            <span id="mes-pago-recibo" class="font-medium"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-semibold text-gray-700">Referencia:</span>
+                            <span id="referencia-recibo" class="font-medium"></span>
+                        </div>
+                        <div class="flex justify-between items-start py-2 border-b border-gray-100">
+                            <span class="font-semibold text-gray-700">Observaciones:</span>
+                            <span id="observaciones-recibo" class="font-medium text-right max-w-xs"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conversión de moneda -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 mb-2">Conversión de Moneda</h4>
+                    <div class="text-sm text-gray-600">
+                        <div>Tasa del Dólar: <span id="tasa-recibo" class="font-medium"></span></div>
+                        <div id="conversion-recibo" class="mt-1"></div>
+                    </div>
+                </div>
+
+                <!-- Pie del recibo -->
+                <div class="text-center pt-6 border-t-2 border-gray-300">
+                    <div class="text-sm text-gray-600 mb-4">
+                        <p>Este recibo es un comprobante oficial de pago</p>
+                        <p>Estrellas Sport Club - Sistema de Gestión</p>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        <p>Recibo generado el: <span id="fecha-generacion-recibo"></span></p>
+                        <p>ID de Transacción: <span id="id-transaccion-recibo"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>
