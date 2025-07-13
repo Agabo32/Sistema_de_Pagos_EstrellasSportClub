@@ -13,6 +13,7 @@ $usuario = obtenerUsuarioActual();
     <link rel="apple-touch-icon" href="assets/image/1731114751966-removebg-preview.png">
     <link href="assets/css/tailwind.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -41,6 +42,25 @@ $usuario = obtenerUsuarioActual();
             color: white;
             font-weight: 600;
         }
+        .nav-link-mobile {
+            position: relative;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: 500;
+            display: block;
+            text-decoration: none;
+        }
+        .nav-link-mobile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .nav-link-mobile.active {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 600;
+        }
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transition: all 0.3s ease;
@@ -57,21 +77,178 @@ $usuario = obtenerUsuarioActual();
             transform: translateY(-1px);
             box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
         }
+        
+        /* Estilos para navbar dinámico */
+        @media (max-width: 1280px) {
+            .nav-link {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .nav-link {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Animación suave para el menú móvil */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        #mobile-menu.show {
+            max-height: 500px;
+        }
+        
+        /* Mejorar accesibilidad */
+        .nav-link:focus,
+        .nav-link-mobile:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Asegurar que el menú móvil tenga el z-index correcto */
+        #mobile-menu {
+            z-index: 40;
+        }
+        
+        /* Efecto de desvanecimiento para el menú */
+        .mobile-menu-fade {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .mobile-menu-fade.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Optimización del logo */
+        .logo-container img {
+            object-fit: contain;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Ajustes específicos para diferentes tamaños de pantalla */
+        @media (max-width: 640px) {
+            .logo-container img {
+                max-height: 24px;
+            }
+        }
+        
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .logo-container img {
+                max-height: 32px;
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .logo-container img {
+                max-height: 40px;
+            }
+        }
+        
+        /* Estilos personalizados para SweetAlert2 */
+        .swal2-toast {
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .swal2-popup {
+            border-radius: 12px !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        }
+        
+        .swal2-title {
+            font-weight: 600 !important;
+            color: #1f2937 !important;
+        }
+        
+        .swal2-html-container {
+            color: #6b7280 !important;
+        }
+        
+        .swal2-confirm, .swal2-cancel {
+            border-radius: 8px !important;
+            font-weight: 500 !important;
+            padding: 12px 24px !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .swal2-confirm:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .swal2-cancel:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .swal2-success-btn {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+        }
+        
+        .swal2-error-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+        }
+        
+        .swal2-info-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+        }
+        
+        .swal2-warning-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        }
+        
+        .swal2-question-confirm {
+            background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+        }
+        
+        .swal2-question-cancel {
+            background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+        }
+        
+        .swal2-form-confirm {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+        }
+        
+        .swal2-form-cancel {
+            background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+        }
+        
+        .swal2-loading {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
     <!-- Navigation -->
     <nav class="gradient-bg text-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
+        <div class="container mx-auto px-4 sm:px-6 py-4">
             <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <img src="assets/image/1731114751966-removebg-preview.png" alt="Logo" class="h-10 w-auto">
-                    <div>
-                        <h1 class="text-2xl font-bold tracking-wide text-white">Estrellas Sport Club</h1>
-                        <p class="text-sm text-white opacity-90">Sistema de Gestión</p>
+                <!-- Logo y título -->
+                <div class="flex items-center space-x-2 sm:space-x-3 logo-container">
+                    <img src="assets/image/1731114751966-removebg-preview.png" alt="Logo" class="h-6 w-auto sm:h-8 lg:h-10">
+                    <div class="hidden sm:block">
+                        <h1 class="text-base sm:text-lg lg:text-2xl font-bold tracking-wide text-white">Estrellas Sport Club</h1>
+                        <p class="text-xs sm:text-sm text-white opacity-90">Sistema de Gestión</p>
+                    </div>
+                    <div class="sm:hidden">
+                        <h1 class="text-base font-bold tracking-wide text-white">ESC</h1>
+                        <p class="text-xs text-white opacity-90">Sistema</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4" id="navbar-links">
+
+                <!-- Enlaces de navegación - Desktop -->
+                <div class="hidden xl:flex items-center space-x-4" id="navbar-links-desktop">
                     <div class="flex space-x-2">
                         <a href="#dashboard" class="nav-link">
                             <i class="fas fa-chart-line mr-2"></i>Dashboard
@@ -87,7 +264,7 @@ $usuario = obtenerUsuarioActual();
                         </a>
                     </div>
                     
-                    <!-- Información del usuario -->
+                    <!-- Información del usuario - Desktop -->
                     <div class="flex items-center space-x-3 border-l border-white border-opacity-30 pl-4">
                         <div class="text-right">
                             <div class="text-sm font-medium text-white"><?php echo htmlspecialchars($usuario['nombre_completo']); ?></div>
@@ -108,12 +285,57 @@ $usuario = obtenerUsuarioActual();
                                         <div class="font-medium"><?php echo htmlspecialchars($usuario['nombre_completo']); ?></div>
                                         <div class="text-gray-500"><?php echo htmlspecialchars($usuario['nombre_usuario']); ?></div>
                                     </div>
-                                    <a href="logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                    <a href="#" onclick="confirmarCerrarSesion()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                                         <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
                                     </a>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Botón de menú móvil -->
+                <div class="xl:hidden flex items-center space-x-3">
+                    <!-- Información del usuario - Móvil -->
+                    <div class="hidden md:flex items-center space-x-2 border-l border-white border-opacity-30 pl-3">
+                        <div class="text-right">
+                            <div class="text-xs font-medium text-white"><?php echo htmlspecialchars($usuario['nombre_completo']); ?></div>
+                            <div class="text-xs text-white opacity-80"><?php echo htmlspecialchars($usuario['rol']); ?></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón de menú hamburguesa -->
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-gray-200 transition-colors focus:outline-none" id="mobile-menu-button" aria-label="Abrir menú de navegación">
+                        <i class="fas fa-bars text-xl" id="mobile-menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menú móvil -->
+            <div id="mobile-menu" class="xl:hidden hidden mt-4 pb-4 border-t border-white border-opacity-20">
+                <div class="flex flex-col space-y-2 pt-4">
+                    <a href="#dashboard" class="nav-link-mobile">
+                        <i class="fas fa-chart-line mr-3"></i>Dashboard
+                    </a>
+                    <a href="#atletas" class="nav-link-mobile">
+                        <i class="fas fa-users mr-3"></i>Atletas
+                    </a>
+                    <a href="#pagos" class="nav-link-mobile">
+                        <i class="fas fa-credit-card mr-3"></i>Pagos
+                    </a>
+                    <a href="#reportes" class="nav-link-mobile">
+                        <i class="fas fa-chart-bar mr-3"></i>Reportes
+                    </a>
+                    
+                    <!-- Separador -->
+                    <div class="border-t border-white border-opacity-20 pt-2 mt-2">
+                        <div class="px-4 py-2 text-sm text-white opacity-80">
+                            <div class="font-medium"><?php echo htmlspecialchars($usuario['nombre_completo']); ?></div>
+                            <div class="text-xs opacity-70"><?php echo htmlspecialchars($usuario['rol']); ?></div>
+                        </div>
+                        <a href="#" onclick="confirmarCerrarSesion()" class="nav-link-mobile">
+                            <i class="fas fa-sign-out-alt mr-3"></i>Cerrar Sesión
+                        </a>
                     </div>
                 </div>
             </div>
@@ -751,6 +973,31 @@ $usuario = obtenerUsuarioActual();
             menu.classList.toggle('hidden');
         }
 
+        // Función para manejar el menú móvil dinámico
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileIcon = document.getElementById('mobile-menu-icon');
+            const mobileButton = document.getElementById('mobile-menu-button');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                // Abrir menú
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('show');
+                mobileIcon.className = 'fas fa-times text-xl';
+                mobileButton.setAttribute('aria-expanded', 'true');
+                mobileButton.setAttribute('aria-label', 'Cerrar menú de navegación');
+            } else {
+                // Cerrar menú
+                mobileMenu.classList.remove('show');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+                mobileIcon.className = 'fas fa-bars text-xl';
+                mobileButton.setAttribute('aria-expanded', 'false');
+                mobileButton.setAttribute('aria-label', 'Abrir menú de navegación');
+            }
+        }
+
         // Cerrar el menú cuando se hace clic fuera de él
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('user-menu');
@@ -760,6 +1007,125 @@ $usuario = obtenerUsuarioActual();
                 menu.classList.add('hidden');
             }
         });
+
+        // Cerrar menú móvil al hacer clic en un enlace
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileLinks = document.querySelectorAll('.nav-link-mobile');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    const mobileIcon = document.getElementById('mobile-menu-icon');
+                    const mobileButton = document.getElementById('mobile-menu-button');
+                    
+                    mobileMenu.classList.remove('show');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                    }, 300);
+                    mobileIcon.className = 'fas fa-bars text-xl';
+                    mobileButton.setAttribute('aria-expanded', 'false');
+                    mobileButton.setAttribute('aria-label', 'Abrir menú de navegación');
+                });
+            });
+        });
+
+        // Cerrar menú móvil al redimensionar la ventana
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1280) { // xl breakpoint
+                const mobileMenu = document.getElementById('mobile-menu');
+                const mobileIcon = document.getElementById('mobile-menu-icon');
+                const mobileButton = document.getElementById('mobile-menu-button');
+                
+                mobileMenu.classList.remove('show');
+                mobileMenu.classList.add('hidden');
+                mobileIcon.className = 'fas fa-bars text-xl';
+                mobileButton.setAttribute('aria-expanded', 'false');
+                mobileButton.setAttribute('aria-label', 'Abrir menú de navegación');
+            }
+        });
+
+        // Detectar cambios de tamaño de pantalla dinámicamente
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                // Ajustar navbar según el tamaño de pantalla
+                adjustNavbarForScreenSize();
+            }, 250);
+        });
+
+        function adjustNavbarForScreenSize() {
+            const width = window.innerWidth;
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileIcon = document.getElementById('mobile-menu-icon');
+            const mobileButton = document.getElementById('mobile-menu-button');
+            
+            if (width >= 1280) {
+                // Pantalla grande - cerrar menú móvil
+                mobileMenu.classList.remove('show');
+                mobileMenu.classList.add('hidden');
+                mobileIcon.className = 'fas fa-bars text-xl';
+                mobileButton.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        // Función para confirmar cierre de sesión
+        function confirmarCerrarSesion() {
+            // Cerrar menús desplegables
+            const userMenu = document.getElementById('user-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (userMenu) userMenu.classList.add('hidden');
+            if (mobileMenu) {
+                mobileMenu.classList.remove('show');
+                mobileMenu.classList.add('hidden');
+            }
+
+            // Mostrar confirmación con SweetAlert2
+            Swal.fire({
+                title: '¿Cerrar Sesión?',
+                text: '¿Estás seguro de que deseas cerrar tu sesión?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, Cerrar Sesión',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Mostrar loading
+                    Swal.fire({
+                        title: 'Cerrando sesión...',
+                        text: 'Por favor espera',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Limpiar almacenamiento del navegador
+                    try {
+                        localStorage.clear();
+                        sessionStorage.clear();
+                    } catch (e) {
+                        console.log('Error limpiando almacenamiento:', e);
+                    }
+                    
+                    // Forzar cierre de sesión con múltiples métodos
+                    setTimeout(() => {
+                        // Método 1: Usar force_logout.php
+                        window.location.replace('force_logout.php?t=' + Date.now());
+                        
+                        // Método 2: Si el método 1 falla, intentar con logout.php
+                        setTimeout(() => {
+                            window.location.replace('logout.php?force=1&t=' + Date.now());
+                        }, 2000);
+                    }, 500);
+                }
+            });
+        }
     </script>
 </body>
 </html>

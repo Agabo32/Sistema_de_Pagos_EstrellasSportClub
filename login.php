@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="apple-touch-icon" href="assets/image/1731114751966-removebg-preview.png">
     <link href="assets/css/tailwind.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -584,12 +585,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <?php if (isset($_GET['logout']) && $_GET['logout'] === 'success'): ?>
-                <div class="success-message" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); border: 1px solid #6ee7b7; border-radius: 12px; padding: 1rem; margin-bottom: 2rem; color: #059669; font-weight: 500;">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <span>Sesión cerrada exitosamente. ¡Hasta pronto!</span>
-                </div>
-            <?php endif; ?>
+
 
             <form method="POST" action="">
                 <div class="form-group">
@@ -733,6 +729,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Inicialización cuando el DOM está listo
         document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar mensaje de logout exitoso si existe
+            <?php if (isset($_GET['logout']) && $_GET['logout'] === 'success'): ?>
+            Swal.fire({
+                title: '¡Sesión Cerrada!',
+                text: 'Has cerrado tu sesión exitosamente. ¡Hasta pronto!',
+                icon: 'success',
+                confirmButtonColor: '#667eea',
+                confirmButtonText: 'Entendido'
+            });
+            <?php endif; ?>
+            
             // Focus en el primer campo
             const firstInput = document.getElementById('nombre_usuario');
             if (firstInput) {
