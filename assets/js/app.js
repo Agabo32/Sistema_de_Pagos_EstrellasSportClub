@@ -21,16 +21,40 @@ function inicializarApp() {
     const ahora = new Date();
     document.getElementById('mes-reporte').value = ahora.getMonth() + 1;
     document.getElementById('año-reporte').value = ahora.getFullYear();
+    
+    // Establecer estado activo inicial en el navbar
+    actualizarEstadoActivo('dashboard');
+    
+    // Ajustar navbar según el tamaño de pantalla inicial
+    adjustNavbarForScreenSize();
 }
 
 function configurarNavegacion() {
-    const navLinks = document.querySelectorAll('.nav-link');
+    // Configurar enlaces de navegación para desktop y móvil
+    const navLinks = document.querySelectorAll('.nav-link, .nav-link-mobile');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const target = this.getAttribute('href').substring(1);
             mostrarSeccion(target);
+            
+            // Actualizar estado activo
+            actualizarEstadoActivo(target);
         });
+    });
+}
+
+function actualizarEstadoActivo(seccionActiva) {
+    // Remover clase activa de todos los enlaces
+    const allNavLinks = document.querySelectorAll('.nav-link, .nav-link-mobile');
+    allNavLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Agregar clase activa al enlace correspondiente
+    const activeLinks = document.querySelectorAll(`[href="#${seccionActiva}"]`);
+    activeLinks.forEach(link => {
+        link.classList.add('active');
     });
 }
 
@@ -618,31 +642,34 @@ function editarAtleta(id) {
 }
 
 async function eliminarAtleta(id) {
-    if (!confirm('¿Está seguro de eliminar este atleta? Esta acción no se puede deshacer.')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch('views/atletas.php', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id_atleta: id })
-        });
+    confirmarAccion('¿Estás seguro de que deseas eliminar este atleta? Esta acción no se puede deshacer.', async () => {
+        mostrarLoading('Eliminando atleta...');
         
-        const data = await response.json();
-        if (data.success) {
-            await cargarAtletas();
-            cargarDashboard();
-            mostrarNotificacion('Atleta eliminado correctamente', 'success');
-        } else {
-            mostrarNotificacion('Error al eliminar el atleta: ' + (data.message || 'Error desconocido'), 'error');
+        try {
+            const response = await fetch('views/atletas.php', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id_atleta: id })
+            });
+            
+            const data = await response.json();
+            cerrarLoading();
+            
+            if (data.success) {
+                await cargarAtletas();
+                cargarDashboard();
+                mostrarNotificacion('Atleta eliminado correctamente', 'success');
+            } else {
+                mostrarNotificacion('Error al eliminar el atleta: ' + (data.message || 'Error desconocido'), 'error');
+            }
+        } catch (error) {
+            cerrarLoading();
+            console.error('Error:', error);
+            mostrarNotificacion('Error de conexión al eliminar el atleta', 'error');
         }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarNotificacion('Error de conexión al eliminar el atleta', 'error');
-    }
+    });
 }
 
 // Funciones de cálculo
@@ -795,32 +822,223 @@ function limpiarFormularioPago() {
     document.getElementById('conversion-info').textContent = '';
 }
 
+// Función mejorada con SweetAlert2
 function mostrarNotificacion(mensaje, tipo) {
-    // Crear elemento de notificación
-    const notificacion = document.createElement('div');
-    notificacion.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
-        tipo === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-    }`;
-    
-    notificacion.innerHTML = `
-        <div class="flex items-center justify-between">
-            <span>${mensaje}</span>
-            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(notificacion);
-    
-    // Remover después de 5 segundos
-    setTimeout(() => {
-        if (notificacion.parentElement) {
-            notificacion.remove();
+    const configuracion = {
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        toast: true,
+        customClass: {
+            popup: 'swal2-toast'
         }
-    }, 5000);
-    
-    return notificacion;
+    };
+
+    switch(tipo) {
+        case 'success':
+            Swal.fire({
+                ...configuracion,
+                icon: 'success',
+                title: mensaje,
+                background: '#10b981',
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+            break;
+        case 'error':
+            Swal.fire({
+                ...configuracion,
+                icon: 'error',
+                title: mensaje,
+                background: '#ef4444',
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+            break;
+        case 'warning':
+            Swal.fire({
+                ...configuracion,
+                icon: 'warning',
+                title: mensaje,
+                background: '#f59e0b',
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+            break;
+        case 'info':
+            Swal.fire({
+                ...configuracion,
+                icon: 'info',
+                title: mensaje,
+                background: '#3b82f6',
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+            break;
+        default:
+            Swal.fire({
+                ...configuracion,
+                icon: 'info',
+                title: mensaje,
+                background: '#6b7280',
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+    }
+}
+
+// Función para confirmaciones con SweetAlert2
+function confirmarAccion(mensaje, callback, titulo = '¿Estás seguro?') {
+    Swal.fire({
+        title: titulo,
+        text: mensaje,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Sí, continuar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'swal2-confirm',
+            cancelButton: 'swal2-cancel'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback();
+        }
+    });
+}
+
+// Función para mostrar loading con SweetAlert2
+function mostrarLoading(mensaje = 'Procesando...') {
+    Swal.fire({
+        title: mensaje,
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+}
+
+// Función para cerrar loading
+function cerrarLoading() {
+    Swal.close();
+}
+
+// Función para mostrar alertas de éxito con SweetAlert2
+function mostrarExito(mensaje, titulo = '¡Éxito!') {
+    Swal.fire({
+        title: titulo,
+        text: mensaje,
+        icon: 'success',
+        confirmButtonColor: '#10b981',
+        confirmButtonText: 'Entendido',
+        customClass: {
+            confirmButton: 'swal2-success-btn'
+        }
+    });
+}
+
+// Función para mostrar alertas de error con SweetAlert2
+function mostrarError(mensaje, titulo = 'Error') {
+    Swal.fire({
+        title: titulo,
+        text: mensaje,
+        icon: 'error',
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Entendido',
+        customClass: {
+            confirmButton: 'swal2-error-btn'
+        }
+    });
+}
+
+// Función para mostrar alertas de información con SweetAlert2
+function mostrarInfo(mensaje, titulo = 'Información') {
+    Swal.fire({
+        title: titulo,
+        text: mensaje,
+        icon: 'info',
+        confirmButtonColor: '#3b82f6',
+        confirmButtonText: 'Entendido',
+        customClass: {
+            confirmButton: 'swal2-info-btn'
+        }
+    });
+}
+
+// Función para mostrar alertas de advertencia con SweetAlert2
+function mostrarAdvertencia(mensaje, titulo = 'Advertencia') {
+    Swal.fire({
+        title: titulo,
+        text: mensaje,
+        icon: 'warning',
+        confirmButtonColor: '#f59e0b',
+        confirmButtonText: 'Entendido',
+        customClass: {
+            confirmButton: 'swal2-warning-btn'
+        }
+    });
+}
+
+// Función para mostrar alertas de pregunta con SweetAlert2
+function mostrarPregunta(mensaje, titulo = 'Confirmación') {
+    return Swal.fire({
+        title: titulo,
+        text: mensaje,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'swal2-question-confirm',
+            cancelButton: 'swal2-question-cancel'
+        }
+    });
+}
+
+// Función para mostrar alertas de carga con SweetAlert2
+function mostrarCarga(mensaje = 'Cargando...', titulo = 'Por favor espera') {
+    Swal.fire({
+        title: titulo,
+        text: mensaje,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+        customClass: {
+            popup: 'swal2-loading'
+        }
+    });
+}
+
+// Función para mostrar alertas de formulario con SweetAlert2
+function mostrarFormulario(titulo, html, callback) {
+    Swal.fire({
+        title: titulo,
+        html: html,
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+        preConfirm: () => {
+            return callback();
+        },
+        customClass: {
+            popup: 'swal2-form',
+            confirmButton: 'swal2-form-confirm',
+            cancelButton: 'swal2-form-cancel'
+        }
+    });
 }
 
 // Funciones de filtrado para pagos del atleta
